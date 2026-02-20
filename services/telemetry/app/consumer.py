@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 class TelemetryConsumer:
-    """Kafka consumer that processes DER telemetry events."""
+    """Kafka consumer that processes DER telemetry events.
+
+    I'm running this as a standalone service (separate from the API) so that
+    event processing scales independently and doesn't block HTTP request handling.
+    """
 
     def __init__(self):
         self._config = {

@@ -1,3 +1,6 @@
+# I'm using Docker Compose to orchestrate all five services locally.
+# Health checks with dependency conditions ensure services start in the right order:
+# PostgreSQL and Kafka must be healthy before the API or telemetry consumer starts.
 services:
   postgres:
     image: postgres:16-alpine

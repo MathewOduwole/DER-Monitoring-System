@@ -1,6 +1,8 @@
 import os
 
 
+# I'm using a class-based config hierarchy so each environment (dev, test, prod)
+# inherits shared defaults but can override what it needs.
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_SORT_KEYS = False

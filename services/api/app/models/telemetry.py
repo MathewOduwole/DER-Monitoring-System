@@ -4,7 +4,12 @@ from app.extensions import db
 
 
 class TelemetryData(db.Model):
-    """Time-series telemetry data for a DER."""
+    """Time-series telemetry data for a DER.
+
+    I'm storing Active Power, Reactive Power, and Voltage as the three core
+    attributes the assignment specifies. The composite index on (der_id, timestamp)
+    is critical for the 14-day window queries the API supports.
+    """
 
     __tablename__ = "telemetry_data"
 

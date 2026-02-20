@@ -1,5 +1,7 @@
 -- DER Monitoring System - Database Schema
--- This script runs automatically on first container start
+-- I'm using PostgreSQL for its strong support for JSONB, time-zone-aware timestamps,
+-- and CHECK constraints, all of which are central to this project's requirements.
+-- This script runs on first container start via the Docker entrypoint.
 
 CREATE TABLE IF NOT EXISTS ders (
     id SERIAL PRIMARY KEY,
@@ -11,6 +13,9 @@ CREATE TABLE IF NOT EXISTS ders (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- I chose to keep telemetry in the same database rather than a dedicated time-series DB
+-- to keep the stack simpler for this scope. The composite index on (der_id, timestamp DESC)
+-- ensures efficient querying for the 14-day windows the API supports.
 CREATE TABLE IF NOT EXISTS telemetry_data (
     id SERIAL PRIMARY KEY,
     der_id INTEGER NOT NULL REFERENCES ders(id) ON DELETE CASCADE,
@@ -21,6 +26,8 @@ CREATE TABLE IF NOT EXISTS telemetry_data (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- I'm enforcing the business rules (max 3 DERs per chart, max 14-day range) at the database
+-- level with CHECK constraints so the invariants hold regardless of which service writes.
 CREATE TABLE IF NOT EXISTS charts (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

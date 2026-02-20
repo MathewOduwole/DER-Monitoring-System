@@ -7,6 +7,8 @@ from app.db import get_session
 
 logger = logging.getLogger(__name__)
 
+# I'm defining sensible validation ranges for each telemetry attribute.
+# These guard against corrupt or nonsensical readings before they reach the database.
 VALID_RANGES = {
     "active_power": (-10000.0, 10000.0),
     "reactive_power": (-10000.0, 10000.0),

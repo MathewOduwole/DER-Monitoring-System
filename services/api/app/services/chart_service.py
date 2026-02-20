@@ -10,7 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 class ChartService:
-    """Business logic for chart configuration and data retrieval."""
+    """Business logic for chart configuration and data retrieval.
+
+    I validate DER existence and date-range constraints at the service layer
+    (in addition to the DB CHECK constraints) so I can return clear error messages
+    to the client rather than raw database errors.
+    """
 
     @staticmethod
     def create(data: dict) -> tuple[Chart | None, str | None]:

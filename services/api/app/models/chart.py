@@ -9,7 +9,11 @@ MAX_DATE_RANGE_DAYS = 14
 
 
 class Chart(db.Model):
-    """Chart configuration for visualising DER telemetry."""
+    """Chart configuration for visualising DER telemetry.
+
+    I'm using JSONB for der_names so each chart can reference up to 3 DERs
+    without needing a join table — keeps the schema lean for this use case.
+    """
 
     __tablename__ = "charts"
 

@@ -6,6 +6,9 @@ from confluent_kafka import Producer
 logger = logging.getLogger(__name__)
 
 
+# I chose confluent-kafka over kafka-python for its C-backed performance and
+# production-grade reliability. The producer is lazily initialised so the
+# API service can start even if Kafka isn't available yet.
 class KafkaProducerClient:
     """Wrapper around confluent-kafka Producer for publishing telemetry events."""
 

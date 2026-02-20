@@ -12,6 +12,9 @@ from app.routes.chart_routes import chart_bp
 from app.routes.health_routes import health_bp
 
 
+# I'm using the Flask app factory pattern here so the application can be
+# instantiated with different configs (dev, test, prod) and so that tests
+# can spin up isolated app instances without shared state.
 def create_app(config_override=None) -> Flask:
     app = Flask(__name__)
 

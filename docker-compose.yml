@@ -66,7 +66,7 @@ services:
       DATABASE_URL: postgresql://der_user:der_password@postgres:5432/der_monitoring
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     ports:
-      - "5000:5000"
+      - "5001:5000"
 
   telemetry:
     build:

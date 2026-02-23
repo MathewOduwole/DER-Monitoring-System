@@ -82,5 +82,15 @@ services:
       DATABASE_URL: postgresql://der_user:der_password@postgres:5432/der_monitoring
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: der-web
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+
 volumes:
   postgres_data:

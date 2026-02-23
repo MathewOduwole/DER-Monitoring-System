@@ -36,7 +36,7 @@ class ChartService:
 
     @staticmethod
     def get_by_id(chart_id: int) -> Chart | None:
-        return Chart.query.get(chart_id)
+        return db.session.get(Chart, chart_id)
 
     @staticmethod
     def get_all() -> list[Chart]:

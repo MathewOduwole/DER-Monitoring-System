@@ -23,7 +23,7 @@ class TestingConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "TEST_DATABASE_URL",
-        "postgresql://der_user:der_password@localhost:5432/der_monitoring_test"
+        "sqlite:///test.db"
     )
 
 

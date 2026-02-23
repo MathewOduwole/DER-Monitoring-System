@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from sqlalchemy import JSON
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.extensions import db
@@ -19,7 +20,7 @@ class Chart(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    der_names = db.Column(JSONB, nullable=False, default=list)
+    der_names = db.Column(JSON().with_variant(JSONB, "postgresql"), nullable=False, default=list)
     start_date = db.Column(db.DateTime(timezone=True), nullable=False)
     end_date = db.Column(db.DateTime(timezone=True), nullable=False)
     created_at = db.Column(

@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate, validates, ValidationError
+from marshmallow import Schema, fields, validate, validates, validates_schema, ValidationError
 from datetime import timedelta
 
 from app.models.chart import MAX_DERS_PER_CHART, MAX_DATE_RANGE_DAYS
@@ -15,11 +15,12 @@ class CreateChartSchema(Schema):
     end_date = fields.DateTime(required=True)
 
     @validates("der_names")
-    def validate_unique_ders(self, value):
+    def validate_unique_ders(self, value, **kwargs):
         if len(value) != len(set(value)):
             raise ValidationError("DER names must be unique.")
 
-    def validate(self, data, **kwargs):
+    @validates_schema
+    def validate_date_range(self, data, **kwargs):
         errors = {}
         if "start_date" in data and "end_date" in data:
             if data["end_date"] <= data["start_date"]:
@@ -30,7 +31,6 @@ class CreateChartSchema(Schema):
                 ]
         if errors:
             raise ValidationError(errors)
-        return data
 
 
 class UpdateChartSchema(Schema):
@@ -43,6 +43,6 @@ class UpdateChartSchema(Schema):
     end_date = fields.DateTime()
 
     @validates("der_names")
-    def validate_unique_ders(self, value):
+    def validate_unique_ders(self, value, **kwargs):
         if len(value) != len(set(value)):
             raise ValidationError("DER names must be unique.")

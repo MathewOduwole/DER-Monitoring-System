@@ -1,0 +1,54 @@
+# I'm keeping the values flat and straightforward so anyone deploying
+# can see at a glance what is configurable without digging through templates.
+
+api:
+  image: dermonitoringsystem-api:latest
+  replicas: 1
+  port: 5000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+telemetry:
+  image: dermonitoringsystem-telemetry:latest
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+web:
+  image: dermonitoringsystem-web:latest
+  replicas: 1
+  port: 80
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+postgres:
+  image: postgres:16-alpine
+  user: der_user
+  password: der_password
+  database: der_monitoring
+  storage: 1Gi
+  port: 5432
+
+kafka:
+  image: confluentinc/cp-kafka:7.7.1
+  port: 9092
+  internalPort: 29092
+
+zookeeper:
+  image: confluentinc/cp-zookeeper:7.7.1
+  port: 2181

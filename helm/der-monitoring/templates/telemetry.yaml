@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "der-monitoring.fullname" . }}-telemetry
+  labels:
+    {{- include "der-monitoring.labels" . | nindent 4 }}
+    app.kubernetes.io/component: telemetry
+spec:
+  replicas: {{ .Values.telemetry.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: telemetry
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: telemetry
+    spec:
+      containers:
+        - name: telemetry
+          image: {{ .Values.telemetry.image }}
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@postgres:{{ .Values.postgres.port }}/{{ .Values.postgres.database }}"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:{{ .Values.kafka.internalPort }}"
+          resources:
+            {{- toYaml .Values.telemetry.resources | nindent 12 }}

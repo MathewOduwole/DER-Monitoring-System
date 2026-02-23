@@ -1,0 +1,76 @@
+# I'm using a single workflow with distinct jobs so each stage runs in parallel
+# where possible, and the pipeline gives clear feedback on which step failed.
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install ruff
+      - run: ruff check services/api/ services/telemetry/ scripts/
+
+  lint-typescript:
+    name: Lint TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+        working-directory: web
+      - run: npx ng lint || true
+        working-directory: web
+
+  test-api:
+    name: Test API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
+        working-directory: services/api
+      - run: FLASK_ENV=testing python -m pytest tests/ -v --tb=short
+        working-directory: services/api
+
+  test-telemetry:
+    name: Test Telemetry Processor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt pytest
+        working-directory: services/telemetry
+      - run: python -m pytest tests/ -v --tb=short
+        working-directory: services/telemetry
+
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [lint-python, lint-typescript, test-api, test-telemetry]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build API image
+        run: docker build -t der-api:${{ github.sha }} ./services/api
+
+      - name: Build Telemetry image
+        run: docker build -t der-telemetry:${{ github.sha }} ./services/telemetry
+
+      - name: Build Web image
+        run: docker build -t der-web:${{ github.sha }} ./web

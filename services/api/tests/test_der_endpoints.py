@@ -1,7 +1,5 @@
 """Integration tests for DER management endpoints."""
 
-import json
-
 
 SAMPLE_DER = {
     "name": "Solar-Panel-Test",

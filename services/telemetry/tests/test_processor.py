@@ -1,7 +1,6 @@
 """Unit tests for the telemetry processor validation logic."""
 
 import pytest
-from unittest.mock import patch, MagicMock
 
 from app.processor import TelemetryProcessor
 
